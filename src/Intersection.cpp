@@ -29,18 +29,18 @@ void WaitingVehicles::permitEntryToFirstInQueue()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    // L2.3 : First, get the entries from teh front of the _promises and _vehicles.
+    // L2.3 : First, get the entries from the front of the _promises and _vehicles.
     // Then, fulfil promise and send signal back that permission to enter has been granted.
     // Finally, remove the front elements from both queues.
 
-    // get entries from the front of both queues
+    // get entries from front of _promisses and _vehicles vectors
     auto firstPromise = _promises.begin();
-    auto firstVehicle = _vehicles.begin();
+    auto firstVehicle =_vehicles.begin();
 
-    // fulfill promise and send signal back that permission to enter has been granted
-    firstPromise->set_value();
+    // fulfil promise and send signal back
+    firstPromise->set_value();  
 
-    // remove front elements from both queues
+    // remove front elements of both queues
     _vehicles.erase(firstVehicle);
     _promises.erase(firstPromise);
 }
@@ -90,7 +90,7 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 
     // wait untile the vehicle has been granted entry
     ftrVehicleAllowedToEnter.wait();
-    
+
     lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
     
