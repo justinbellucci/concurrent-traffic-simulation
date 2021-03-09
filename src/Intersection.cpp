@@ -76,10 +76,9 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
 // adds a new vehicle to the queue and returns once the vehicle is allowed to enter
 void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 {
-    std::unique_lock<std::mutex> lck(_mtx);
+    std::unique_lock<std::mutex> lck(_mtxCout);
     std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id() << std::endl;
     lck.unlock();
-
     // L2.2 : First, add the new vehicle to the waiting line by creating a promise, a corresponding future and then adding both to _waitingVehicle.
     // Then, wait until the vehicle has been granted entry.
 
@@ -93,10 +92,10 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 
     lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
-    
+    lck.unlock();
     // FP.6b : use the methods TrafficLight::getCurrentPhase and TrafficLight::waitForGreen to block the execution until the traffic light turns green.
 
-    lck.unlock();
+    
 }
 
 void Intersection::vehicleHasLeft(std::shared_ptr<Vehicle> vehicle)

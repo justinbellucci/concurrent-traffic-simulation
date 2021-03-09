@@ -35,7 +35,7 @@ protected:
     double _posX, _posY;              // vehicle position in pixels
     
     std::vector<std::thread> threads; // create a thread vector
-    static std::mutex _mtx;           // mutex shared by all traffic objects for protecting cout 
+    static std::mutex _mtxCout;           // mutex shared by all traffic objects for protecting cout 
 
 private:
     static int _idCnt; // global variable for counting object ids
