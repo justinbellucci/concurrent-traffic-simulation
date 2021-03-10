@@ -40,7 +40,6 @@ class TrafficLight : public TrafficObject
 public:
     // constructor / desctructor
     TrafficLight();
-    ~TrafficLight();
 
     // getters / setters
     TrafficLightPhase getCurrentPhase();
@@ -51,7 +50,6 @@ public:
 
 private:
     void cycleThroughPhases();
-    TrafficLightPhase _lightPhase;
     // typical behaviour methods
 
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase 
@@ -60,6 +58,7 @@ private:
 
     std::condition_variable _condition;
     std::mutex _mutex;
+    TrafficLightPhase _lightPhase;
 };
 
 #endif
