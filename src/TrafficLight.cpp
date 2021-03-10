@@ -3,9 +3,23 @@
 #include "TrafficLight.h"
 #include <thread>
 
-/* Implementation of class "MessageQueue" */
+/* ---- Implementation of class "MessageQueue" ---- */
 
-/* 
+template <typename T>
+void MessageQueue<T>::send(T &&msg)
+{
+    // FP.4a : The method send should use the mechanisms std::lock_guard<std::mutex> 
+    // as well as _condition.notify_one() to add a new message to the queue and afterwards send a notification.
+
+    // perform queue modification under the lock
+    std::lock_guard<std::mutex> uLock(_mutex);
+
+    // add message to the queue
+    _queue.push_back(std::move(msg));
+    _cond.notify_one(); // notify client after adding message to the queue
+    std::cout << "Message sent! Traffic light changed to " << msg << std::endl; 
+}
+ 
 template <typename T>
 T MessageQueue<T>::receive()
 {
@@ -14,15 +28,7 @@ T MessageQueue<T>::receive()
     // The received object should then be returned by the receive function. 
 }
 
-template <typename T>
-void MessageQueue<T>::send(T &&msg)
-{
-    // FP.4a : The method send should use the mechanisms std::lock_guard<std::mutex> 
-    // as well as _condition.notify_one() to add a new message to the queue and afterwards send a notification.
-}
-*/
-
-/* Implementation of class "TrafficLight" */
+/* ---- Implementation of class "TrafficLight" ---- */
 
  
 TrafficLight::TrafficLight()
