@@ -23,10 +23,10 @@ void MessageQueue<T>::send(T &&msg)
 
 /* Implementation of class "TrafficLight" */
 
-/* 
+ 
 TrafficLight::TrafficLight()
 {
-    _currentPhase = TrafficLightPhase::red;
+    _lightPhase = TrafficLightPhase::red;
 }
 
 void TrafficLight::waitForGreen()
@@ -38,7 +38,7 @@ void TrafficLight::waitForGreen()
 
 TrafficLightPhase TrafficLight::getCurrentPhase()
 {
-    return _currentPhase;
+    return _lightPhase;
 }
 
 void TrafficLight::simulate()
@@ -55,4 +55,3 @@ void TrafficLight::cycleThroughPhases()
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
 }
 
-*/
