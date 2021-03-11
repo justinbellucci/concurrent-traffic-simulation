@@ -5,6 +5,8 @@
 #include <deque>
 #include <condition_variable>
 #include "TrafficObject.h"
+#include <thread>
+#include <memory>
 
 // forward declarations to avoid include cycle
 class Vehicle;
@@ -33,10 +35,10 @@ private:
 // as well as „TrafficLightPhase getCurrentPhase()“, where TrafficLightPhase is an enum that 
 // can be either „red“ or „green“. Also, add the private method „void cycleThroughPhases()“. 
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“ as its value. 
-enum TrafficLightPhase
+enum class TrafficLightPhase
 {
     red,
-    green
+    green,
 };
 
 class TrafficLight : public TrafficObject
@@ -62,7 +64,9 @@ private:
 
     std::condition_variable _condition;
     std::mutex _mutex;
-    TrafficLightPhase _lightPhase;
+    TrafficLightPhase _currentPhase;
+    std::shared_ptr<MessageQueue<TrafficLightPhase>> messages;
+    
 };
 
 #endif

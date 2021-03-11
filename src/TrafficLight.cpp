@@ -2,6 +2,8 @@
 #include <random>
 #include "TrafficLight.h"
 #include <thread>
+#include <future>
+#include <algorithm>
 
 /* ---- Implementation of class "MessageQueue" ---- */
 
@@ -17,7 +19,7 @@ void MessageQueue<T>::send(T &&msg)
     // add message to the queue
     _queue.push_back(std::move(msg));
     _cond.notify_one(); // notify client after adding message to the queue
-    std::cout << "Message sent! Traffic light changed to " << msg << std::endl; 
+    //std::cout << "Message sent! Traffic light changed to " << msg << std::endl; 
 }
  
 template <typename T>
@@ -26,26 +28,50 @@ T MessageQueue<T>::receive()
     // FP.5a : The method receive should use std::unique_lock<std::mutex> and _condition.wait() 
     // to wait for and receive new messages and pull them from the queue using move semantics. 
     // The received object should then be returned by the receive function. 
+
+    // perform queue modification under the lock
+    std::unique_lock<std::mutex> uLock(_mutex);
+    _cond.wait(uLock, [this]{ return !_queue.empty(); }); // pass unique lock to condition variable
+
+    // remove element from queue
+    T msg = std::move(_queue.back());
+    _queue.pop_back(); 
+
+    return msg; // will not be copied due to Return Value Optimization (RVO)
 }
 
 /* ---- Implementation of class "TrafficLight" ---- */
 
- 
+// constructor
 TrafficLight::TrafficLight()
 {
-    _lightPhase = TrafficLightPhase::red;
+    _currentPhase = TrafficLightPhase::red;
+    // create shared pointer messageQueue object of type MessageQueue
+    messages = std::make_shared<MessageQueue<TrafficLightPhase>>(); 
 }
 
+// methods
 void TrafficLight::waitForGreen()
 {
     // FP.5b : add the implementation of the method waitForGreen, in which an infinite while-loop 
     // runs and repeatedly calls the receive function on the message queue. 
     // Once it receives TrafficLightPhase::green, the method returns.
+
+    while(true)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // save processor
+        TrafficLightPhase lightPhase = messages->receive(); // receive message when available
+        if(lightPhase == TrafficLightPhase::green)
+        {
+            return;
+        } 
+    }
 }
 
 TrafficLightPhase TrafficLight::getCurrentPhase()
 {
-    return _lightPhase;
+    
+    return _currentPhase;
 }
 
 void TrafficLight::simulate()
@@ -66,31 +92,38 @@ void TrafficLight::cycleThroughPhases()
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
     
-    // create random number
-    std::random_device rd;
+    // create random number between 4 and 6 seconds
+    std::random_device rd; 
     std::mt19937 mersEng(rd());
-    std::uniform_int_distribution<int> uniDist(4000, 6000);
+    std::uniform_int_distribution<> uniDist(4, 6);
     int cycleDuration = uniDist(mersEng);
+
+    std::vector<std::future<void>> futures;
     
-    auto start = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsedTime;
+    auto lastUpdate = std::chrono::system_clock::now();
 
     while(true)
     {
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        elapsedTime = std::chrono::high_resolution_clock::now() - start;
 
-        if(elapsedTime.count() > cycleDuration)
+        if(elapsedTime >= cycleDuration)
         {
-            // reset time
-            start = std::chrono::high_resolution_clock::now();
+            _currentPhase = (_currentPhase == TrafficLightPhase::red ? TrafficLightPhase::green : TrafficLightPhase::red);
+            // send message to queue
+            futures.emplace_back(std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, messages, std::move(_currentPhase)));
+            lastUpdate = std::chrono::system_clock::now();
             cycleDuration = uniDist(mersEng);
-
-            // toggle light phase
-            _lightPhase = _lightPhase == red ? green : red;
-
-            // TODO: send message to queue
+            // std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
+            // ftr.wait();
+            // });
         }
+        std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
+        ftr.wait();
+        });
     }
+    // std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
+    //     ftr.wait();
+    // });
 }
 
