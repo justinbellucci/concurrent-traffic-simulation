@@ -5,6 +5,7 @@ CMakeFiles/traffic_simulation.dir/src/Graphics.cpp.o
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Graphics.cpp
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Graphics.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Intersection.h
+ /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficLight.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficObject.h
  /usr/local/Cellar/opencv/4.5.1_3/include/opencv4/opencv2/calib3d.hpp
  /usr/local/Cellar/opencv/4.5.1_3/include/opencv4/opencv2/core.hpp
@@ -111,12 +112,14 @@ CMakeFiles/traffic_simulation.dir/src/Intersection.cpp.o
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Intersection.cpp
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Intersection.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Street.h
+ /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficLight.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficObject.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Vehicle.h
 CMakeFiles/traffic_simulation.dir/src/Street.cpp.o
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Intersection.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Street.cpp
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Street.h
+ /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficLight.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficObject.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Vehicle.h
 CMakeFiles/traffic_simulation.dir/src/TrafficLight.cpp.o
@@ -130,6 +133,7 @@ CMakeFiles/traffic_simulation.dir/src/TrafficSimulator-Final.cpp.o
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Graphics.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Intersection.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Street.h
+ /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficLight.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficObject.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficSimulator-Final.cpp
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Vehicle.h
@@ -237,6 +241,7 @@ CMakeFiles/traffic_simulation.dir/src/TrafficSimulator-Final.cpp.o
 CMakeFiles/traffic_simulation.dir/src/Vehicle.cpp.o
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Intersection.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Street.h
+ /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficLight.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/TrafficObject.h
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Vehicle.cpp
  /Users/justinbellucci/GitHub/concurrent-traffic-simulation/src/Vehicle.h
