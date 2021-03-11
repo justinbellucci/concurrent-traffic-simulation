@@ -36,6 +36,7 @@ T MessageQueue<T>::receive()
     // remove element from queue
     T msg = std::move(_queue.back());
     _queue.pop_back(); 
+    _queue.clear(); // needed to make traffic lights work
 
     return msg; // will not be copied due to Return Value Optimization (RVO)
 }
@@ -70,7 +71,6 @@ void TrafficLight::waitForGreen()
 
 TrafficLightPhase TrafficLight::getCurrentPhase()
 {
-    
     return _currentPhase;
 }
 
@@ -97,33 +97,26 @@ void TrafficLight::cycleThroughPhases()
     std::mt19937 mersEng(rd());
     std::uniform_int_distribution<> uniDist(4, 6);
     int cycleDuration = uniDist(mersEng);
-
-    std::vector<std::future<void>> futures;
+    auto startTime = std::chrono::system_clock::now();
     
-    auto lastUpdate = std::chrono::system_clock::now();
+    std::vector<std::future<void>> futures;
 
     while(true)
     {
-        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - startTime).count();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // save processor
+        
         if(elapsedTime >= cycleDuration)
         {
-            _currentPhase = (_currentPhase == TrafficLightPhase::red ? TrafficLightPhase::green : TrafficLightPhase::red);
+            _currentPhase = _currentPhase == TrafficLightPhase::red ? TrafficLightPhase::green : TrafficLightPhase::red;
             // send message to queue
             futures.emplace_back(std::async(std::launch::async, &MessageQueue<TrafficLightPhase>::send, messages, std::move(_currentPhase)));
-            lastUpdate = std::chrono::system_clock::now();
+            startTime = std::chrono::system_clock::now();
             cycleDuration = uniDist(mersEng);
-            // std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
-            // ftr.wait();
-            // });
         }
-        std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
-        ftr.wait();
-        });
     }
-    // std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
-    //     ftr.wait();
-    // });
+    std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr){
+        ftr.wait();
+    });
 }
 
